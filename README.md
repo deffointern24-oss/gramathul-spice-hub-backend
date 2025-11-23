@@ -13,7 +13,7 @@ Features authentication, product, cart, order, and admin dashboard modules.
 
 - **Product Management Module**
   - Admin can add, edit, delete products
-  - **Image upload via Cloudinary is currently not set up — product image upload features will not work**
+  - **Image upload via mongo db **
   - Category sorting, product search
   - Product fields: name, description, price, category, stock, weight, images, isFeatured, createdBy, createdAt
 
@@ -34,7 +34,6 @@ Features authentication, product, cart, order, and admin dashboard modules.
 
 - Node.js (v14 or above)
 - MongoDB database
-- [Optional] Cloudinary account (required for product image upload)
 
 ---
 
@@ -44,14 +43,8 @@ Create a `.env` file at the root:
 
 MONGO_URL=mongodb://localhost:27017/yourdbname
 JWT_SECRET=your_secret_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
 PORT=5000
 
-
-**Note:**  
-If you do not set up Cloudinary, the image upload feature for products will not work, but all other API endpoints are functional.
 
 ---
 
@@ -87,29 +80,46 @@ authController.js
 cartController.js
 orderController.js
 adminController.js
+productController.js
 models/
 User.js
 Product.js
 Cart.js
 Order.js
+category.js
 routes/
 authRoutes.js
 cartRoutes.js
 orderRoutes.js
 adminRoutes.js
+productRoutes.js
 middleware/
 auth.js
+upload.js
 utils/
 server.js
 
 
 ---
 
-## ⚠️ Limitations
+## Product API Testing (HTML Preview)
 
-> **Product image upload is non-functional until Cloudinary is set up.  
-> You may comment out image upload logic to use the rest of the API.  
-> All other modules and endpoints are working.**
+The Product Management API is fully functional.  
+You can test product upload and listing—including image upload to MongoDB—using the provided `index.html` file.
+
+**How to use:**
+1. Make sure your backend API is running (with CORS enabled).
+2. Open `index.html` in your browser.
+3. Use the form to upload products with images.
+4. Below the form, all products will be listed—including uploaded images and details.
+
+> This demo HTML interface is for easy manual testing and preview of product features.  
+> For actual project integration, use your frontend stack as needed.
+
+**Note:**  
+- Product images are served via:  
+  `GET /api/products/:id/image/:imgIndex`
+- All product upload endpoints require a valid JWT token (see the `TOKEN` variable in the HTML).
 
 ---
 

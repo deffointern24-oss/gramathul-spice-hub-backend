@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Upload & List</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f0f2f5; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 2px 6px #0001; }
+    form > div { margin-bottom: 16px; }
+    input, textarea, select { width: 100%; padding: 8px; }
+    button { padding: 10px 24px; background: #2980d9; color: #fff; border: none; border-radius: 4px; cursor: pointer;}
+    button:hover { background: #236ba1; }
+    .product-list { margin-top: 40px; }
+    .product-item { background: #fafafa; margin-bottom: 24px; padding: 20px; border-radius: 6px; box-shadow: 0 1px 3px #0002; display: flex; gap: 24px; }
+    .product-details { flex: 1; }
+    .product-item img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+    .label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add New Product</h2>
+    <form id="productForm" enctype="multipart/form-data">
+      <div>
+        <label class="label">Name:</label>
+        <input type="text" name="name" required>
+      </div>
+      <div>
+        <label class="label">Description:</label>
+        <textarea name="description" required></textarea>
+      </div>
+      <div>
+        <label class="label">Price:</label>
+        <input type="number" step="0.01" name="price" required>
+      </div>
+      <div>
+        <label class="label">Category:</label>
+        <input type="text" name="category" required>
+      </div>
+      <div>
+        <label class="label">Stock:</label>
+        <input type="number" name="stock" required>
+      </div>
+      <div>
+        <label class="label">Weight:</label>
+        <input type="number" name="weight" required>
+      </div>
+      <div>
+        <label class="label">Is Featured:</label>
+        <select name="isFeatured">
+          <option value="true">Yes</option>
+          <option value="false" selected>No</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">Image:</label>
+        <input type="file" name="images" accept="image/*" required>
+      </div>
+      <button type="submit">Upload Product</button>
+    </form>
+
+    <hr>
+    <h2>Product List</h2>
+    <div id="productList" class="product-list"></div>
+  </div>
+
+  <script>
+    // CHANGE THIS
+    const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars";
+    const API_BASE = "http://localhost:5000";
+
+    document.getElementById('productForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const formData = new FormData(this);
+      const res = await fetch(API_BASE + "/api/products", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + TOKEN },
+        body: formData
+      });
+      if (res.ok) {
+        alert('Product uploaded!');
+        this.reset();
+        loadProducts();
+      } else {
+        alert("Upload failed");
+      }
+    });
+
+    async function loadProducts() {
+      const res = await fetch(API_BASE + "/api/products");
+      const products = await res.json();
+      const list = document.getElementById('productList');
+      list.innerHTML = "";
+      products.forEach(prod => {
+        const div = document.createElement('div');
+        div.className = "product-item";
+        // Use product image endpoint: GET /api/products/:id/image/0
+        let img = "";
+        if (prod.images && prod.images.length > 0)
+          img = `<img src="${API_BASE}/api/products/${prod._id}/image/0" alt="Product Image">`;
+        div.innerHTML = `
+          ${img}
+          <div class="product-details">
+            <div><span class="label">Name:</span> ${prod.name}</div>
+            <div><span class="label">Description:</span> ${prod.description}</div>
+            <div><span class="label">Price:</span> ₹${prod.price}</div>
+            <div><span class="label">Category:</span> ${prod.category}</div>
+            <div><span class="label">Stock:</span> ${prod.stock}</div>
+            <div><span class="label">Weight:</span> ${prod.weight}</div>
+            <div><span class="label">Is Featured:</span> ${prod.isFeatured ? "Yes" : "No"}</div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>

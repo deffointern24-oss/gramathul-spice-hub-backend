@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const productRoutes = require('./routes/productRoutes');
+const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const { authenticate, authorize } = require('./middleware/auth');
@@ -11,6 +13,7 @@ const { authenticate, authorize } = require('./middleware/auth');
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Connect to MongoDB
 connectDB();
@@ -18,6 +21,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Example of a protected admin route
