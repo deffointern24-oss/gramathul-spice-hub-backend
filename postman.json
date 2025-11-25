@@ -2,16 +2,26 @@
   "info": {
     "name": "Node Auth API",
     "_postman_id": "c7e7bbd1-3756-449c-897f-12b885264003",
-    "description": "API requests for authentication, MongoDB product images, cart, orders, admin dashboard. Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars",
+    "description": "API requests for authentication, MongoDB product images, cart, orders, admin dashboard with auto token management.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
   "item": [
     {
       "name": "Signup",
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -20,18 +30,43 @@
         "url": {
           "raw": "http://localhost:5000/api/auth/signup",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "auth", "signup"]
+          "path": [
+            "api",
+            "auth",
+            "signup"
+          ]
         }
       }
     },
     {
       "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Auto-save token\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+              "    pm.variables.set(\"authToken\", jsonData.token);",
+              "    pm.environment.set(\"authToken\", jsonData.token); ",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -40,9 +75,195 @@
         "url": {
           "raw": "http://localhost:5000/api/auth/login",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "auth", "login"]
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add to Wishlist",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"<PRODUCT_ID>\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/wishlist/add",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "wishlist",
+            "add"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Remove from Wishlist",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"<PRODUCT_ID>\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/wishlist/remove",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "wishlist",
+            "remove"
+          ]
+        }
+      }
+    },
+    {
+      "name": "View Wishlist",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/wishlist",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "wishlist"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/profile",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "profile"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Edit Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Sachin\",\n  \"lastName\": \"Kumar\",\n  \"gmail\": \"sachin.new@gmail.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/profile/edit",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "profile",
+            "edit"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Change Password",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"test123\",\n  \"newPassword\": \"newpassword123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/profile/change-password",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "profile",
+            "change-password"
+          ]
         }
       }
     },
@@ -51,28 +272,72 @@
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "formdata",
           "formdata": [
-            { "key": "name", "value": "Coffee Mug", "type": "text" },
-            { "key": "description", "value": "A ceramic mug for hot beverages", "type": "text" },
-            { "key": "price", "value": "299", "type": "text" },
-            { "key": "category", "value": "Kitchenware", "type": "text" },
-            { "key": "stock", "value": "100", "type": "text" },
-            { "key": "weight", "value": "400", "type": "text" },
-            { "key": "isFeatured", "value": "true", "type": "text" },
-            { "key": "variants", "value": "[{\"name\":\"color\",\"value\":\"white\"},{\"name\":\"size\",\"value\":\"large\"}]", "type": "text" },
-            { "key": "images", "src": "<ABSOLUTE_PATH_TO_IMAGE>", "type": "file" }
+            {
+              "key": "name",
+              "value": "Coffee Mug",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": "A ceramic mug for hot beverages",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "299",
+              "type": "text"
+            },
+            {
+              "key": "category",
+              "value": "Kitchenware",
+              "type": "text"
+            },
+            {
+              "key": "stock",
+              "value": "100",
+              "type": "text"
+            },
+            {
+              "key": "weight",
+              "value": "400",
+              "type": "text"
+            },
+            {
+              "key": "isFeatured",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "variants",
+              "value": "[{\"name\":\"color\",\"value\":\"white\"},{\"name\":\"size\",\"value\":\"large\"}]",
+              "type": "text"
+            },
+            {
+              "key": "images",
+              "src": "<ABSOLUTE_PATH_TO_IMAGE>",
+              "type": "file"
+            }
           ]
         },
         "url": {
           "raw": "http://localhost:5000/api/products",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products"]
+          "path": [
+            "api",
+            "products"
+          ]
         }
       }
     },
@@ -81,22 +346,43 @@
       "request": {
         "method": "PUT",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "formdata",
           "formdata": [
-            { "key": "name", "value": "Coffee Mug Premium", "type": "text" },
-            { "key": "stock", "value": "120", "type": "text" },
-            { "key": "images", "src": "<ABSOLUTE_PATH_TO_NEW_IMAGE>", "type": "file" }
+            {
+              "key": "name",
+              "value": "Coffee Mug Premium",
+              "type": "text"
+            },
+            {
+              "key": "stock",
+              "value": "120",
+              "type": "text"
+            },
+            {
+              "key": "images",
+              "src": "<ABSOLUTE_PATH_TO_NEW_IMAGE>",
+              "type": "file"
+            }
           ]
         },
         "url": {
           "raw": "http://localhost:5000/api/products/<PRODUCT_ID>",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products", "<PRODUCT_ID>"]
+          "path": [
+            "api",
+            "products",
+            "<PRODUCT_ID>"
+          ]
         }
       }
     },
@@ -105,14 +391,23 @@
       "request": {
         "method": "DELETE",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/products/<PRODUCT_ID>",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products", "<PRODUCT_ID>"]
+          "path": [
+            "api",
+            "products",
+            "<PRODUCT_ID>"
+          ]
         }
       }
     },
@@ -124,12 +419,23 @@
         "url": {
           "raw": "http://localhost:5000/api/products?category=Kitchenware&search=mug",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products"],
+          "path": [
+            "api",
+            "products"
+          ],
           "query": [
-            { "key": "category", "value": "Kitchenware" },
-            { "key": "search", "value": "mug" }
+            {
+              "key": "category",
+              "value": "Kitchenware"
+            },
+            {
+              "key": "search",
+              "value": "mug"
+            }
           ]
         }
       }
@@ -142,9 +448,15 @@
         "url": {
           "raw": "http://localhost:5000/api/products/<PRODUCT_ID>",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products", "<PRODUCT_ID>"]
+          "path": [
+            "api",
+            "products",
+            "<PRODUCT_ID>"
+          ]
         }
       }
     },
@@ -156,9 +468,17 @@
         "url": {
           "raw": "http://localhost:5000/api/products/<PRODUCT_ID>/image/<IMG_INDEX>",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "products", "<PRODUCT_ID>", "image", "<IMG_INDEX>"]
+          "path": [
+            "api",
+            "products",
+            "<PRODUCT_ID>",
+            "image",
+            "<IMG_INDEX>"
+          ]
         }
       }
     },
@@ -167,8 +487,14 @@
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -177,9 +503,15 @@
         "url": {
           "raw": "http://localhost:5000/api/cart/add",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "cart", "add"]
+          "path": [
+            "api",
+            "cart",
+            "add"
+          ]
         }
       }
     },
@@ -188,8 +520,14 @@
       "request": {
         "method": "PUT",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -198,9 +536,15 @@
         "url": {
           "raw": "http://localhost:5000/api/cart/update",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "cart", "update"]
+          "path": [
+            "api",
+            "cart",
+            "update"
+          ]
         }
       }
     },
@@ -209,8 +553,14 @@
       "request": {
         "method": "DELETE",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -219,9 +569,15 @@
         "url": {
           "raw": "http://localhost:5000/api/cart/remove",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "cart", "remove"]
+          "path": [
+            "api",
+            "cart",
+            "remove"
+          ]
         }
       }
     },
@@ -230,14 +586,22 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/cart",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "cart"]
+          "path": [
+            "api",
+            "cart"
+          ]
         }
       }
     },
@@ -246,8 +610,14 @@
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -256,9 +626,14 @@
         "url": {
           "raw": "http://localhost:5000/api/orders",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "orders"]
+          "path": [
+            "api",
+            "orders"
+          ]
         }
       }
     },
@@ -267,14 +642,23 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/orders/my",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "orders", "my"]
+          "path": [
+            "api",
+            "orders",
+            "my"
+          ]
         }
       }
     },
@@ -283,14 +667,23 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/orders/<ORDER_ID>",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "orders", "<ORDER_ID>"]
+          "path": [
+            "api",
+            "orders",
+            "<ORDER_ID>"
+          ]
         }
       }
     },
@@ -299,14 +692,22 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/orders",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "orders"]
+          "path": [
+            "api",
+            "orders"
+          ]
         }
       }
     },
@@ -315,8 +716,14 @@
       "request": {
         "method": "PUT",
         "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "body": {
           "mode": "raw",
@@ -325,9 +732,16 @@
         "url": {
           "raw": "http://localhost:5000/api/orders/<ORDER_ID>/status",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "orders", "<ORDER_ID>", "status"]
+          "path": [
+            "api",
+            "orders",
+            "<ORDER_ID>",
+            "status"
+          ]
         }
       }
     },
@@ -336,14 +750,24 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/admin/orders/total",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "admin", "orders", "total"]
+          "path": [
+            "api",
+            "admin",
+            "orders",
+            "total"
+          ]
         }
       }
     },
@@ -352,14 +776,24 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/admin/earnings/total",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "admin", "earnings", "total"]
+          "path": [
+            "api",
+            "admin",
+            "earnings",
+            "total"
+          ]
         }
       }
     },
@@ -368,14 +802,24 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/admin/products/top",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "admin", "products", "top"]
+          "path": [
+            "api",
+            "admin",
+            "products",
+            "top"
+          ]
         }
       }
     },
@@ -384,14 +828,24 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/admin/customers/total",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "admin", "customers", "total"]
+          "path": [
+            "api",
+            "admin",
+            "customers",
+            "total"
+          ]
         }
       }
     },
@@ -400,14 +854,24 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjAxZjYzNjE4MDM0YzJkOTI1MDVlNyIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2MzcxMjg3NiwiZXhwIjoxNzYzNzE2NDc2fQ.bW6Qa_gLxQPYDUwO2Roqz4VL_q82UjJneltsJ4Ipars" }
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
         ],
         "url": {
           "raw": "http://localhost:5000/api/admin/orders/recent",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "5000",
-          "path": ["api", "admin", "orders", "recent"]
+          "path": [
+            "api",
+            "admin",
+            "orders",
+            "recent"
+          ]
         }
       }
     }

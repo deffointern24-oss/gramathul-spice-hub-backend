@@ -6,6 +6,10 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cors = require('cors');
+const wishlistRoutes = require('./routes/wishlistRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+
+
 
 const authRoutes = require('./routes/authRoutes');
 const { authenticate, authorize } = require('./middleware/auth');
@@ -23,6 +27,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Example of a protected admin route
 app.get('/api/admin/dashboard', authenticate, authorize(['ADMIN']), (req, res) => {
