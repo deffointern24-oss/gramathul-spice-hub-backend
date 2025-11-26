@@ -1,0 +1,287 @@
+{
+  "info": {
+    "name": "Bulk Add Spices Products",
+    "_postman_id": "2d599955-6d3a-4303-a252-product-bulk-add",
+    "description": "Collection for bulk inserting spice products with images.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Add Premium Turmeric Powder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Premium Turmeric Powder", "type": "text" },
+            { "key": "price", "value": "199", "type": "text" },
+            { "key": "originalPrice", "value": "249", "type": "text" },
+            { "key": "rating", "value": "4.8", "type": "text" },
+            { "key": "reviews", "value": "142", "type": "text" },
+            { "key": "weight", "value": "250g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "true", "type": "text" },
+            { "key": "description", "value": "Pure, high-quality turmeric powder with intense golden color and earthy aroma. Perfect for curries, milk, and health drinks.", "type": "text" },
+            { "key": "category", "value": "Powders", "type": "text" },
+            { "key": "origin", "value": "Kerala, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Anti-inflammatory\",\"Antioxidant\",\"Digestive health\",\"Immunity booster\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Curries\",\"Golden milk\",\"Face masks\",\"Rice dishes\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/turmericImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Kashmiri Red Chili Powder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Kashmiri Red Chili Powder", "type": "text" },
+            { "key": "price", "value": "299", "type": "text" },
+            { "key": "originalPrice", "value": "349", "type": "text" },
+            { "key": "rating", "value": "4.7", "type": "text" },
+            { "key": "reviews", "value": "89", "type": "text" },
+            { "key": "weight", "value": "200g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "false", "type": "text" },
+            { "key": "description", "value": "Authentic Kashmiri red chili powder with mild heat and vibrant red color. Adds beautiful color to your dishes.", "type": "text" },
+            { "key": "category", "value": "Powders", "type": "text" },
+            { "key": "origin", "value": "Kashmir, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Rich in Vitamin C\",\"Metabolism booster\",\"Pain relief\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Curries\",\"Tandoor dishes\",\"Marinades\",\"Pickles\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/chiliPowderImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Green Cardamom Pods",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Green Cardamom Pods", "type": "text" },
+            { "key": "price", "value": "899", "type": "text" },
+            { "key": "originalPrice", "value": "999", "type": "text" },
+            { "key": "rating", "value": "4.9", "type": "text" },
+            { "key": "reviews", "value": "67", "type": "text" },
+            { "key": "weight", "value": "100g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "true", "type": "text" },
+            { "key": "description", "value": "Premium quality green cardamom pods with intense aroma and flavor. The queen of spices for desserts and beverages.", "type": "text" },
+            { "key": "category", "value": "Whole Spices", "type": "text" },
+            { "key": "origin", "value": "Idukki, Kerala", "type": "text" },
+            { "key": "benefits", "value": "[\"Digestive aid\",\"Fresh breath\",\"Heart health\",\"Antioxidants\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Tea\",\"Desserts\",\"Biryani\",\"Coffee\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/cardamomImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Cumin Seeds (Jeera)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Cumin Seeds (Jeera)", "type": "text" },
+            { "key": "price", "value": "149", "type": "text" },
+            { "key": "rating", "value": "4.6", "type": "text" },
+            { "key": "reviews", "value": "156", "type": "text" },
+            { "key": "weight", "value": "200g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "false", "type": "text" },
+            { "key": "description", "value": "Aromatic cumin seeds with warm, earthy flavor. Essential for Indian tempering and spice blends.", "type": "text" },
+            { "key": "category", "value": "Whole Spices", "type": "text" },
+            { "key": "origin", "value": "Rajasthan, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Digestive health\",\"Iron rich\",\"Weight management\",\"Blood sugar control\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Tempering\",\"Spice blends\",\"Rice dishes\",\"Vegetables\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/cuminImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Garam Masala Powder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Garam Masala Powder", "type": "text" },
+            { "key": "price", "value": "179", "type": "text" },
+            { "key": "originalPrice", "value": "199", "type": "text" },
+            { "key": "rating", "value": "4.5", "type": "text" },
+            { "key": "reviews", "value": "201", "type": "text" },
+            { "key": "weight", "value": "100g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "false", "type": "text" },
+            { "key": "description", "value": "Traditional blend of aromatic spices. Our signature garam masala adds warmth and depth to any dish.", "type": "text" },
+            { "key": "category", "value": "Blends", "type": "text" },
+            { "key": "origin", "value": "Punjab, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Digestive aid\",\"Antioxidants\",\"Warming spices\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Curries\",\"Meat dishes\",\"Vegetables\",\"Rice\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/garamMasalaImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Black Peppercorns",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Black Peppercorns", "type": "text" },
+            { "key": "price", "value": "399", "type": "text" },
+            { "key": "rating", "value": "4.8", "type": "text" },
+            { "key": "reviews", "value": "78", "type": "text" },
+            { "key": "weight", "value": "150g", "type": "text" },
+            { "key": "inStock", "value": "false", "type": "text" },
+            { "key": "isOrganic", "value": "true", "type": "text" },
+            { "key": "description", "value": "Premium quality black peppercorns with sharp, pungent flavor. The king of spices.", "type": "text" },
+            { "key": "category", "value": "Whole Spices", "type": "text" },
+            { "key": "origin", "value": "Malabar, Kerala", "type": "text" },
+            { "key": "benefits", "value": "[\"Antioxidants\",\"Digestive health\",\"Anti-inflammatory\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Seasoning\",\"Spice blends\",\"Marinades\",\"Soups\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/blackPepperImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Coriander Seeds",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Coriander Seeds", "type": "text" },
+            { "key": "price", "value": "129", "type": "text" },
+            { "key": "rating", "value": "4.4", "type": "text" },
+            { "key": "reviews", "value": "92", "type": "text" },
+            { "key": "weight", "value": "250g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "false", "type": "text" },
+            { "key": "description", "value": "Fresh coriander seeds with citrusy, slightly sweet flavor. Perfect for grinding fresh powder.", "type": "text" },
+            { "key": "category", "value": "Whole Spices", "type": "text" },
+            { "key": "origin", "value": "Gujarat, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Digestive health\",\"Cholesterol management\",\"Anti-inflammatory\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Spice powder\",\"Tempering\",\"Pickling\",\"Curries\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/corianderImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Add Star Anise",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{authToken}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "Star Anise", "type": "text" },
+            { "key": "price", "value": "549", "type": "text" },
+            { "key": "originalPrice", "value": "599", "type": "text" },
+            { "key": "rating", "value": "4.7", "type": "text" },
+            { "key": "reviews", "value": "45", "type": "text" },
+            { "key": "weight", "value": "50g", "type": "text" },
+            { "key": "inStock", "value": "true", "type": "text" },
+            { "key": "isOrganic", "value": "true", "type": "text" },
+            { "key": "description", "value": "Exotic star anise with sweet licorice flavor. Perfect for biryanis and aromatic dishes.", "type": "text" },
+            { "key": "category", "value": "Whole Spices", "type": "text" },
+            { "key": "origin", "value": "Arunachal Pradesh, India", "type": "text" },
+            { "key": "benefits", "value": "[\"Digestive aid\",\"Respiratory health\",\"Antioxidants\"]", "type": "text" },
+            { "key": "uses", "value": "[\"Biryani\",\"Tea\",\"Desserts\",\"Spice blends\"]", "type": "text" },
+            { "key": "images", "src": "/absolute/path/to/starAniseImage.jpg", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/products",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "products"]
+        }
+      }
+    }
+  ]
+}

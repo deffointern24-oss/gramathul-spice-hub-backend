@@ -24,7 +24,7 @@ exports.addToWishlist = async (req, res) => {
 // Remove product from wishlist
 exports.removeFromWishlist = async (req, res) => {
   try {
-    const { productId } = req.body;
+    const { productId } = req.params;
     const wishlist = await Wishlist.findOne({ userId: req.user.id });
     
     if (!wishlist) return res.status(404).json({ error: 'Wishlist not found' });

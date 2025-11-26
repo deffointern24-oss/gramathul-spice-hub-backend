@@ -13,12 +13,13 @@ exports.getProfile = async (req, res) => {
 // Edit user profile
 exports.editProfile = async (req, res) => {
   try {
-    const { firstName, lastName, gmail } = req.body;
+    const { name, email ,phone,address} = req.body;
     const updates = {};
     
-    if (firstName) updates.firstName = firstName;
-    if (lastName) updates.lastName = lastName;
-    if (gmail) updates.gmail = gmail;
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (phone) updates.phone = phone;
+    if (address) updates.address = address;
     
     const user = await User.findByIdAndUpdate(
       req.user.id,

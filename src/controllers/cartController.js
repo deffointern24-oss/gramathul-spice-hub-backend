@@ -34,7 +34,9 @@ exports.updateQuantity = async (req, res) => {
 // Remove item
 exports.removeItem = async (req, res) => {
   const userId = req.user.id;
-  const { productId } = req.body;
+  const { productId } = req.params;
+  console.log( userId, productId );
+
   const cart = await Cart.findOne({ userId });
   if (!cart) return res.status(404).json({ error: 'Cart not found' });
   cart.items = cart.items.filter(item => !item.productId.equals(productId));

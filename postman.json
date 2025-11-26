@@ -25,7 +25,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"firstName\": \"Sachin\",\n  \"lastName\": \"Tiwari\",\n  \"gmail\": \"admin@gmail.com\",\n  \"password\": \"test123\",\n  \"role\": \"ADMIN\"\n}"
+          "raw": "{\n  \"firstName\": \"Sachin\",\n  \"lastName\": \"Tiwari\",\n  \"email\": \"admin@email.com\",\n  \"password\": \"test123\",\n  \"role\": \"ADMIN\"\n}"
         },
         "url": {
           "raw": "http://localhost:5000/api/auth/signup",
@@ -70,7 +70,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"gmail\": \"admin@gmail.com\",\n  \"password\": \"test123\"\n}"
+          "raw": "{\n  \"email\": \"admin@email.com\",\n  \"password\": \"test123\"\n}"
         },
         "url": {
           "raw": "http://localhost:5000/api/auth/login",
@@ -217,7 +217,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"firstName\": \"Sachin\",\n  \"lastName\": \"Kumar\",\n  \"gmail\": \"sachin.new@gmail.com\"\n}"
+          "raw": "{\n  \"firstName\": \"Sachin\",\n  \"lastName\": \"Kumar\",\n  \"email\": \"sachin.new@email.com\"\n}"
         },
         "url": {
           "raw": "http://localhost:5000/api/profile/edit",

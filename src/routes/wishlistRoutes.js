@@ -9,7 +9,7 @@ const {
 const router = express.Router();
 
 router.post('/add', authenticate, addToWishlist);
-router.delete('/remove', authenticate, removeFromWishlist);
+router.delete('/remove/:productId', authenticate, removeFromWishlist);
 router.get('/', authenticate, getWishlist);
 
 module.exports = router;
