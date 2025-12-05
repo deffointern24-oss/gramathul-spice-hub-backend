@@ -12,8 +12,8 @@ const orderSchema = new mongoose.Schema({
   tax: { type: Number, default: 0 },
   shipping: { type: Number, default: 0 },
   discount: { type: Number, default: 0 },
-  paymentStatus: { type: String, enum: ['pending', 'completed'], default: 'pending' },
-  orderStatus: { type: String, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], default: 'pending' },
+  paymentStatus: { type: String, enum: ['Pending', 'Completed'], default: 'Pending' },
+  orderStatus: { type: String, enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'], default: 'Pending' },
   paymentMethod: { type: String, default: 'COD' },
   deliveryAddress: { type: String, required: true },
   createdAt: { type: Date, default: Date.now }

@@ -41,6 +41,7 @@ exports.getAllOrders = async (req, res) => {
 // Admin: Change order status
 exports.updateOrderStatus = async (req, res) => {
   const { status } = req.body;
+  console.log('Updating order status to:', status);
   const order = await Order.findById(req.params.id);
   if (!order) return res.status(404).json({ error: 'Order not found' });
   order.orderStatus = status;

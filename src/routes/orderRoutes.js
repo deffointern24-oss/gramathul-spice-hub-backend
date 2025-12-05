@@ -10,8 +10,7 @@ const {
 
 const router = express.Router();
 
-// User routes
-router.post('/', authenticate, authorize(['USER', 'ADMIN']), createOrder); // createOrder for users
+// createOrder for users
 router.get('/my', authenticate, authorize(['USER', 'ADMIN']), getOrdersByUser);
 router.get('/:id', authenticate, authorize(['USER', 'ADMIN']), getOrderDetails);
 

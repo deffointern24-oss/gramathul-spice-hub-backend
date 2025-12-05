@@ -7,6 +7,6 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   address: { type: String },
   role: { type: String, enum: ['ADMIN', 'USER'], default: 'USER' }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
