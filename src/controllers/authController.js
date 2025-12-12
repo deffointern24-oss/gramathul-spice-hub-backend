@@ -5,10 +5,14 @@ const bcrypt = require('bcrypt');
 exports.signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ error: 'Email already in use' });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const name = firstName + ' ' + lastName;
-    const user = new User({ name, email, password: hashedPassword, role});
-    await user.save();
+    const newUser = new User({ name, email, password: hashedPassword, role});
+    await newUser .save();
     res.status(201).json({ message: 'User created!' });
   } catch (err) {
     res.status(400).json({ error: err.message });

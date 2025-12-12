@@ -1,4 +1,6 @@
 const express = require('express');
+const cron = require('node-cron');
+const axios = require('axios');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 const cartRoutes = require('./routes/cartRoutes');
@@ -12,15 +14,17 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 
 const authRoutes = require('./routes/authRoutes');
-const { authenticate, authorize } = require('./middleware/auth');
+
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+console.log("Frontend URL:", process.env.FRONTEND_URL);
 
+// CORS configuration
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:5173'],
+  origin: ['http://localhost:8080', 'http://localhost:5173',process.env.FRONTEND_URL],
   credentials: true
 }));
 
@@ -37,14 +41,27 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/payment', paymentRoutes);
 
-// Example of a protected admin route
-app.get('/api/admin/dashboard', authenticate, authorize(['ADMIN']), (req, res) => {
-  res.send('Admin dashboard!');
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
 });
 
-// Example of a protected user route
-app.get('/api/user/dashboard', authenticate, authorize(['USER', 'ADMIN']), (req, res) => {
-  res.send('User dashboard!');
+const baseurl =()=>{
+  if(process.env.NODE_ENV==='production'){
+    return process.env.RENDER_URL;
+  }
+  return 'http://localhost:5000';
+}
+
+// Self-ping every minute to prevent idling
+
+cron.schedule('*/5 * * * *', async () => {
+  try {
+    await axios.get(`${baseurl()}/api/health`);
+    console.log('[KeepAlive] Self-ping success');
+  } catch (e) {
+    console.error('[KeepAlive] Ping failed', e.message);
+  }
 });
 
 app.get('/api/getkey', (req, res) => {
