@@ -8,7 +8,8 @@ const orderItemSchema = new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   items: [orderItemSchema],
-  subtotal: { type: Number, required: true },
+  item_price: { type: Number, require: true },
+  totalAmount: { type: Number, required: true },
   tax: { type: Number, default: 0 },
   shipping: { type: Number, default: 0 },
   discount: { type: Number, default: 0 },

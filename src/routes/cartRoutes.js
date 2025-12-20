@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/add', authenticate, addToCart);
 router.put('/update', authenticate, updateQuantity);
-router.delete('/remove/:productId',  authenticate, removeItem);
+router.delete('/remove{/:productId}', authenticate, removeItem);
 router.get('/', authenticate, getCart);
 
 module.exports = router;

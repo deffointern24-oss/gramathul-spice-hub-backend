@@ -30,19 +30,33 @@ exports.updateQuantity = async (req, res) => {
   await cart.save();
   res.json(cart);
 };
-
-// Remove item
+// remove single when you are pass on productid and remove all when you are nothing pass any product id
 exports.removeItem = async (req, res) => {
-  const userId = req.user.id;
-  const { productId } = req.params;
-  console.log( userId, productId );
+  try {
+    const userId = req.user.id;
+    const { productId } = req.params;
 
-  const cart = await Cart.findOne({ userId });
-  if (!cart) return res.status(404).json({ error: 'Cart not found' });
-  cart.items = cart.items.filter(item => !item.productId.equals(productId));
-  await cart.save();
-  res.json(cart);
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    if (productId) {
+      cart.items = cart.items.filter(
+        (item) => !item.productId.equals(productId)
+      );
+    } else {
+      cart.items = [];
+    }
+
+    await cart.save();
+    return res.json(cart);
+  } catch (err) {
+    console.error('removeItem error:', err);
+    return res.status(500).json({ error: 'Failed to update cart' });
+  }
 };
+
 
 // View cart
 exports.getCart = async (req, res) => {
