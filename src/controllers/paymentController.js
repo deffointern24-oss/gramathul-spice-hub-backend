@@ -13,20 +13,13 @@ const createOrder = async (req, res) => {
     const { items, address, paymentMethod, discount: clientDiscount } = req.body;
 
     const userId = req.user.id;
-
-    // Basic validation
     if (!userId || !items?.length) {
       return res.status(400).json({ error: "Invalid order data" });
     }
-
-    // Get user (optional: you can skip address from user if you fully trust `address` from client)
     const userDoc = await User.findById(userId);
     if (!userDoc) {
       return res.status(404).json({ error: "User not found" });
     }
-
-
-    // Calculate order values
     let item_price = 0;
     const orderItems = [];
 
@@ -50,19 +43,11 @@ const createOrder = async (req, res) => {
         quantity: item.quantity,
       });
     }
-
-    // Shipping
     const shipping = 100;
-
-    // Discount: you can either trust clientDiscount or recompute based on a promoCode
     const discount = Number(clientDiscount) || 0;
-
-    // Total
     const total = item_price + shipping - discount;
 
     console.log("💰 Calculated values:", { item_price, shipping, discount, total });
-
-    // Create Order document first (common for COD & ONLINE)
     const order = await Order.create({
       userId,
       items: orderItems,
@@ -74,11 +59,8 @@ const createOrder = async (req, res) => {
       paymentMethod: paymentMethod === "cod" ? "COD" : "ONLINE",
       paymentStatus: paymentMethod === "cod" ? "Pending" : "Pending",
       orderStatus: paymentMethod === "cod" ? "Pending" : "Pending",
-      // Optionally store totals
       totalAmount: total,
     });
-
-    // COD FLOW: no Razorpay order, return order only
     if (paymentMethod === "cod") {
       console.log("✅ COD order created:", order._id);
       return res.status(201).json({
@@ -87,10 +69,8 @@ const createOrder = async (req, res) => {
         razorpayOrder: null,
       });
     }
-
-    // ONLINE FLOW: create Razorpay order
     const razorpayOrder = await instance.orders.create({
-      amount: Math.round(total * 100), // in paise
+      amount: Math.round(total * 100),
       currency: "INR",
       receipt: `receipt_${order._id}`,
       notes: {
@@ -98,8 +78,6 @@ const createOrder = async (req, res) => {
         orderId: order._id.toString(),
       },
     });
-
-    // Create Payment record
     await Payment.create({
       userId,
       orderId: order._id,
@@ -136,7 +114,6 @@ const paymentVerification = async (req, res) => {
       orderId,
     } = req.body;
 
-    // Basic validation
     if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
       return res
         .status(400)
@@ -149,8 +126,6 @@ const paymentVerification = async (req, res) => {
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(sign)
       .digest("hex");
-
-    // Signature mismatch
     if (expectedSign !== razorpay_signature) {
       await Payment.findOneAndUpdate(
         { razorpay_order_id },
@@ -166,8 +141,6 @@ const paymentVerification = async (req, res) => {
 
       return res.status(400).json({ success: false, error: "Invalid signature" });
     }
-
-    // Signature OK → update payment doc
     const paymentInfo = await Payment.findOneAndUpdate(
       { razorpay_order_id },
       {
@@ -186,8 +159,6 @@ const paymentVerification = async (req, res) => {
     }
 
     const finalOrderId = orderId || paymentInfo.orderId;
-
-    // Update order status
     if (finalOrderId) {
       await Order.findByIdAndUpdate(finalOrderId, {
         paymentStatus: "Completed",

@@ -59,7 +59,7 @@ exports.createProduct = async (req, res) => {
 // EDIT product with all fields
 exports.editProduct = async (req, res) => {
   try {
-    let updates = {...req.body};
+    let updates = { ...req.body };
     if (req.files && req.files.length > 0) {
       updates.images = req.files.map(file => ({
         data: file.buffer,
@@ -69,8 +69,6 @@ exports.editProduct = async (req, res) => {
     if (updates.variants) updates.variants = safeJSONparse(updates.variants);
     if (updates.benefits) updates.benefits = safeJSONparse(updates.benefits);
     if (updates.uses) updates.uses = safeJSONparse(updates.uses);
-
-    // Fix types for numerical and boolean fields
     if (updates.price !== undefined) updates.price = Number(updates.price);
     if (updates.originalPrice !== undefined) updates.originalPrice = Number(updates.originalPrice);
     if (updates.stock !== undefined) updates.stock = Number(updates.stock);
@@ -89,36 +87,122 @@ exports.editProduct = async (req, res) => {
 
 // DELETE product
 exports.deleteProduct = async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Product deleted' });
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Product deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// VIEW products (filter/sort/search)
+//  VIEW products 
 exports.listProducts = async (req, res) => {
-  const { category, search, isFeatured } = req.query;
-  let filter = {};
-  if (category) filter.category = category;
-  if (isFeatured !== undefined) filter.isFeatured = isFeatured === 'true' || isFeatured === true;
-  if (search) filter.name = { $regex: search, $options: 'i' };
-  const products = await Product.find(filter).sort({ createdAt: -1 });
-  res.json(products);
+  try {
+    const {
+      category,
+      search,
+      isFeatured,
+      page = 1,
+      limit = 5
+    } = req.query;
+    let filter = {};
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+
+    if (isFeatured !== undefined) {
+      filter.isFeatured = isFeatured === 'true' || isFeatured === true;
+    }
+
+    if (search && search.trim()) {
+      const searchRegex = { $regex: search.trim(), $options: 'i' };
+      filter.$or = [
+        { name: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex }
+      ];
+    }
+    const pageNum = Math.max(1, parseInt(page));
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+    const skip = (pageNum - 1) * limitNum;
+    const [products, totalProducts] = await Promise.all([
+      Product.find(filter)
+        .select('-images')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean(), 
+      Product.countDocuments(filter)
+    ]);
+    const totalPages = Math.ceil(totalProducts / limitNum);
+
+    res.json({
+      success: true,
+      products,
+      pagination: {
+        currentPage: pageNum,
+        totalPages,
+        totalProducts,
+        hasMore: pageNum < totalPages,
+        limit: limitNum,
+        showing: products.length
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch products',
+      error: error.message
+    });
+  }
 };
 
-// VIEW single product
+// VIEW single product 
 exports.productDetails = async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  res.json(product);
-};
+  try {
+    const product = await Product.findById(req.params.id)
+      .select('-images')
+      .lean();
 
-// SERVE image (from DB)
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 exports.serveProductImage = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id)
+      .select('images');
+
+    if (!product || !product.images || !product.images[req.params.imgIndex]) {
+      return res.status(404).send('Image not found');
+    }
+
     const img = product.images[req.params.imgIndex];
-    if (!img) return res.status(404).end();
-    res.set('Content-Type', img.contentType);
-    res.send(img.data);
+    let imageBuffer;
+    if (Buffer.isBuffer(img.data)) {
+      imageBuffer = img.data;
+    } else if (img.data && img.data.data && Array.isArray(img.data.data)) {
+      imageBuffer = Buffer.from(img.data.data);
+    } else {
+      console.error('Invalid image data format:', typeof img.data);
+      return res.status(500).send('Invalid image format');
+    }
+
+    res.set({
+      'Content-Type': img.contentType || 'image/jpeg',
+      'Content-Length': imageBuffer.length,
+      'Cache-Control': 'public, max-age=31536000',
+    });
+
+    res.send(imageBuffer);
   } catch (err) {
-    res.status(500).end();
+    console.error('Error serving image:', err);
+    res.status(500).send('Error loading image');
   }
 };

@@ -31,5 +31,9 @@ const productSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
+productSchema.index({ category: 1, createdAt: -1 });
+productSchema.index({ name: 'text', description: 'text', category: 'text' });
+productSchema.index({ isFeatured: 1 });
+productSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Product', productSchema);
