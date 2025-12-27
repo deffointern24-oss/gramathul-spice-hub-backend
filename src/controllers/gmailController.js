@@ -1,109 +1,65 @@
-const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_OWNER,
-        pass: process.env.EMAIL_PASSWORD 
-    }
-});
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-// Verify transporter
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('❌ Email transporter error:', error);
-    } else {
-        console.log('✅ Email server ready');
-    }
-});
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 exports.sendGmail = async (req, res) => {
-    const { gmail } = req.body; 
-    if (!gmail) {
-        return res.status(400).json({
-            success: false,
-            message: 'Gmail is required'
-        });
-    }
-    const subject = '🎉 Welcome to Gramathul Spice Hub!';
-    const body = `
-Dear Subscriber,
+  const { gmail } = req.body;
 
-Thank you for subscribing to Gramathul Spice Hub! 🌶️
+  if (!gmail) {
+    return res.status(400).json({
+      success: false,
+      message: 'Gmail is required',
+    });
+  }
 
-We're excited to have you as part of our community. You'll now receive:
-✅ Exclusive offers and discounts
-✅ New product launches
-✅ Special festival deals
-✅ Authentic spice recipes and tips
+  try {
+    const response = await emailApi.sendTransacEmail({
+      subject: '🎉 Welcome to Gramathul Spice Hub!',
+      sender: {
+        email: process.env.BREVO_SENDER_EMAIL,
+        name: process.env.BREVO_SENDER_NAME,
+      },
+      to: [{ email: gmail }],
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px; border:1px solid #ddd; border-radius:10px;">
+          <h2 style="color:#d35400;">🎉 Welcome to Gramathul Spice Hub!</h2>
+          <p>Dear Subscriber,</p>
+          <p>Thank you for subscribing to <strong>Gramathul Spice Hub</strong>! 🌶️</p>
 
-Stay tuned for amazing updates!
+          <ul>
+            <li>✅ Exclusive offers and discounts</li>
+            <li>✅ New product launches</li>
+            <li>✅ Festival deals</li>
+            <li>✅ Authentic spice recipes</li>
+          </ul>
 
-Best regards,
-Gramathul Spice Hub Team
+          <p>Stay tuned for amazing updates!</p>
 
----
-If you wish to unsubscribe, please contact us at sachintiwari.751858@gmail.com
-    `.trim();
+          <p><strong>Gramathul Spice Hub Team</strong></p>
 
-    const mailOptions = {
-        from: {
-            name: 'Gramathul Spice Hub',
-            address: 'sachintiwari.751858@gmail.com'
-        },
-        to: gmail,
-        subject: subject,
-        text: body,
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                <h2 style="color: #d35400;">🎉 Welcome to Gramathul Spice Hub!</h2>
-                <p>Dear Subscriber,</p>
-                <p>Thank you for subscribing to <strong>Gramathul Spice Hub</strong>! 🌶️</p>
-                
-                <p>We're excited to have you as part of our community. You'll now receive:</p>
-                <ul style="line-height: 1.8;">
-                    <li>✅ Exclusive offers and discounts</li>
-                    <li>✅ New product launches</li>
-                    <li>✅ Special festival deals</li>
-                    <li>✅ Authentic spice recipes and tips</li>
-                </ul>
-                
-                <p>Stay tuned for amazing updates!</p>
-                
-                <p style="margin-top: 30px;">Best regards,<br><strong>Gramathul Spice Hub Team</strong></p>
-                
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-                <p style="font-size: 12px; color: #888;">
-                    If you wish to unsubscribe, please contact us at sachintiwari.751858@gmail.com
-                </p>
-            </div>
-        `
-    };
+          <hr />
+          <p style="font-size:12px;color:#777;">
+            If you wish to unsubscribe, contact us at sachintiwari.751858@gmail.com
+          </p>
+        </div>
+      `,
+    });
 
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent to ${gmail}:`, info.messageId);
+    return res.status(200).json({
+      success: true,
+      message: 'Successfully subscribed! Check your email.',
+      messageId: response.messageId,
+    });
 
-        return res.status(200).json({
-            success: true,
-            message: 'Successfully subscribed! Check your email for confirmation',
-            messageId: info.messageId
-        });
+  } catch (err) {
+    console.error('❌ Brevo Email Error:', err);
 
-    } catch (err) {
-        console.error(`❌ Failed to send email to ${gmail}:`, err.message);
-
-        if (err.message.includes('Daily user sending limit exceeded')) {
-            console.error('🚫 Gmail daily limit reached (500 emails/day)');
-            return res.status(429).json({
-                success: false,
-                message: 'Email service temporarily unavailable. Please try again later.'
-            });
-        }
-
-        return res.status(500).json({
-            success: false,
-            message: 'Failed to send subscription gmail',
-            error: err.message
-        });
-    }
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to send subscription email',
+    });
+  }
 };
