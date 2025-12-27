@@ -77,6 +77,23 @@ app.use(cors({
 }));
 connectDB();
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Gramathul Spice Hub API is running! 🌶️',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      auth: '/api/auth',
+      products: '/api/products',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      profile: '/api/profile'
+    },
+    documentation: 'https://api.gramathulspicehub.com/docs' // Optional
+  });
+});
+
 //  Health check
 app.get('/api/health', (req, res) => {
   const healthData = {
